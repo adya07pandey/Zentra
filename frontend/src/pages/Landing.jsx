@@ -13,8 +13,8 @@ export default function Landing() {
           <img src="/logo.png" alt="logo" />
         </div>
         <div className="landingnavbtn">
-          <button className="signupnavbtn">Singup</button>
-          <button className="loginnavbtn">Login</button>
+          <button className="signupnavbtn" onClick={()=>{navigate("../signup")}}>Singup</button>
+          <button className="loginnavbtn" onClick={()=>{navigate("../login")}}>Login</button>
         </div>
       </div>
       <div className="titles">
