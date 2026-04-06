@@ -4,9 +4,6 @@ import { Prisma } from "@prisma/client";
 export const errorHandler = (err, req, res, next) => {
   console.error("❌ ERROR:", err);
 
-  //////////////////////////////////////////////////
-  // ZOD VALIDATION ERROR
-  //////////////////////////////////////////////////
   if (err instanceof ZodError) {
     return res.status(400).json({
       success: false,
@@ -18,9 +15,6 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  //////////////////////////////////////////////////
-  // PRISMA UNIQUE CONSTRAINT ERROR
-  //////////////////////////////////////////////////
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === "P2002") {
       return res.status(400).json({
@@ -32,19 +26,14 @@ export const errorHandler = (err, req, res, next) => {
     }
   }
 
-  //////////////////////////////////////////////////
-  // CUSTOM APP ERROR
-  //////////////////////////////////////////////////
   if (err.status) {
     return res.status(err.status).json({
       success: false,
       message: err.message,
     });
   }
-
-  //////////////////////////////////////////////////
+  
   // DEFAULT ERROR
-  //////////////////////////////////////////////////
   return res.status(500).json({
     success: false,
     message: "Internal Server Error",

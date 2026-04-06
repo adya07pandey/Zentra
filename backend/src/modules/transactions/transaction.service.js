@@ -17,7 +17,8 @@ export const createTransaction = async (data, userId, orgId) => {
         throw new Error("Transaction not balanced");
     }
 
-    // ✅ create transaction in DB transaction
+    
+
     const result = await prisma.$transaction(async (tx) => {
         const transaction = await tx.transaction.create({
             data: {
@@ -76,7 +77,7 @@ export const getTransactionById = async (transactionId, orgId) => {
     throw new Error("Transaction not found");
   }
 
-  // ✅ format response (clean)
+ 
   const formatted = {
     id: transaction.id,
     description: transaction.description,
@@ -99,7 +100,7 @@ export const getTransactionById = async (transactionId, orgId) => {
 
 export const reverseTransaction = async (transactionId, userId, orgId) => {
   return await prisma.$transaction(async (tx) => {
-    // 1️⃣ find original transaction
+   
     const original = await tx.transaction.findFirst({
       where: {
         id: transactionId,
@@ -118,7 +119,6 @@ export const reverseTransaction = async (transactionId, userId, orgId) => {
       throw new Error("Transaction already reversed");
     }
 
-    // 2️⃣ create reversal transaction
     const reversal = await tx.transaction.create({
       data: {
         description: `Reversal of ${original.description}`,
@@ -128,7 +128,6 @@ export const reverseTransaction = async (transactionId, userId, orgId) => {
       },
     });
 
-    // 3️⃣ create opposite entries
     const reversedEntries = original.entries.map((e) => ({
       transactionId: reversal.id,
       accountId: e.accountId,
@@ -140,7 +139,7 @@ export const reverseTransaction = async (transactionId, userId, orgId) => {
       data: reversedEntries,
     });
 
-    // 4️⃣ mark original as reversed
+
     await tx.transaction.update({
       where: { id: original.id },
       data: { isReversed: true },
@@ -172,7 +171,7 @@ export const getAllTransactions = async (orgId, page = 1, limit = 10) => {
     }),
   ]);
 
-  // 🔹 format
+
   const formatted = transactions.map((t) => {
     let debit = 0;
     let credit = 0;

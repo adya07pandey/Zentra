@@ -6,6 +6,7 @@ const cookieOptions = {
   sameSite: "none",
   maxAge: 1000 * 60 * 60 * 24 * 7
 };
+
 export const signupInit = async (req, res, next) => {
   try {
     await service.signupInit(req.body);
@@ -35,7 +36,8 @@ export const signupVerify = async (req, res, next) => {
     next(err);
   }
 };
-// auth.controller.js
+
+
 export const login = async (req, res, next) => {
   try {
     const token = await service.login(req.body);

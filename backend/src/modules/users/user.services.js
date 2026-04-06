@@ -27,7 +27,7 @@ export const getUsers = async (orgId) => {
 export const inviteUser = async (email, role, orgId, createdBy) => {
   console.log("services reached");
 
-  // 0️⃣ Check if user already exists in this org
+  // Check if user already exists in this org
   const existingMembership = await prisma.membership.findFirst({
     where: {
       orgId,
@@ -41,13 +41,13 @@ export const inviteUser = async (email, role, orgId, createdBy) => {
     throw new Error("User is already a member of this organization");
   }
 
-  // 1️⃣ Generate secure token
+  //  Generate secure token
   const token = crypto.randomBytes(32).toString("hex");
 
-  // 2️⃣ Expiry 24 hours
+  // Expiry 24 hours
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-  // 3️⃣ Save invite
+  //Save invite
   const invite = await prisma.invite.create({
     data: {
       email,
@@ -60,7 +60,7 @@ export const inviteUser = async (email, role, orgId, createdBy) => {
   });
 
  const inviteLink = `http://localhost:5173/accept-invite?token=${token}`;
-  // 4️⃣ Send invite email
+  // Send invite email
   await sendInviteEmail(email, inviteLink);
 
   return { message: "Invite sent successfully", inviteLink };

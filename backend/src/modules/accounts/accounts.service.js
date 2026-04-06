@@ -1,8 +1,6 @@
 import prisma from "../../config/db.js";
 
-//////////////////////////////////////////////////
 // CREATE ACCOUNT
-//////////////////////////////////////////////////
 
 export const createAccount = async (data, orgId) => {
   const { name, type } = data;
@@ -28,9 +26,7 @@ export const createAccount = async (data, orgId) => {
   });
 };
 
-//////////////////////////////////////////////////
 // GET ALL ACCOUNTS (ORG-SCOPED)
-//////////////////////////////////////////////////
 
 export const getAccounts = async (orgId) => {
   return await prisma.account.findMany({
@@ -39,9 +35,7 @@ export const getAccounts = async (orgId) => {
   });
 };
 
-//////////////////////////////////////////////////
 // GET SINGLE ACCOUNT
-//////////////////////////////////////////////////
 
 export const getAccountById = async (id, orgId) => {
   const account = await prisma.account.findFirst({
@@ -56,9 +50,7 @@ export const getAccountById = async (id, orgId) => {
   return account;
 };
 
-//////////////////////////////////////////////////
 // UPDATE ACCOUNT
-//////////////////////////////////////////////////
 
 export const updateAccount = async (id, data, orgId) => {
 

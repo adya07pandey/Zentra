@@ -1,4 +1,3 @@
-// controllers/dashboard.controller.js
 import * as service from "./dashboard.service.js";
 
 export const dashboardController = async (req, res) => {

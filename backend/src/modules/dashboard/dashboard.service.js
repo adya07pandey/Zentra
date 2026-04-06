@@ -1,8 +1,7 @@
-// services/dashboard.service.js
 import prisma from "../../config/db.js";
 
 export const getDashboardData = async (orgId) => {
-  // 🔹 1. ALL ENTRIES
+  //1. ALL ENTRIES
   const entries = await prisma.entry.findMany({
     where: {
       account: {
@@ -18,7 +17,7 @@ export const getDashboardData = async (orgId) => {
   let income = 0;
   let expense = 0;
 
-  // 🔹 2. CALCULATE INCOME & EXPENSE
+  // CALCULATE INCOME & EXPENSE
   entries.forEach((e) => {
     const amount = Number(e.amount);
 
@@ -33,19 +32,19 @@ export const getDashboardData = async (orgId) => {
 
   const net = income - expense;
 
-  // 🔹 3. ACCOUNT COUNT
+  //3. ACCOUNT COUNT
   const accountCount = await prisma.account.count({
     where: { orgId },
   });
 
-  // 🔹 4. RECENT TRANSACTIONS
+  //4. RECENT TRANSACTIONS
   const recentTransactions = await prisma.transaction.findMany({
     where: { orgId },
     orderBy: { createdAt: "desc" },
     take: 5,
   });
 
-  // 🔹 5. CATEGORY BREAKDOWN
+  //5. CATEGORY BREAKDOWN
   const categoryMap = {};
 
   entries.forEach((e) => {
@@ -65,7 +64,7 @@ export const getDashboardData = async (orgId) => {
     })
   );
 
-  // 🔹 6. ACCOUNT BALANCES
+  // ACCOUNT BALANCES
   const balances = await prisma.accountBalance.findMany({
     include: {
       account: {
@@ -81,7 +80,7 @@ export const getDashboardData = async (orgId) => {
     balance: Number(b.balance),
   }));
 
-  // 🔹 7. ACTIVITY LOGS
+  //ACTIVITY LOGS
   const activity = await prisma.auditLog.findMany({
     where: { orgId },
     orderBy: { createdAt: "desc" },

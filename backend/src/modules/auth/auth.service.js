@@ -12,7 +12,7 @@ export const signupInit = async ({ name, email, password, orgName }) => {
 
   const now = new Date();
 
-  // 🚨 1️⃣ CHECK BLOCK
+
   if (session?.otpBlockedUntil && session.otpBlockedUntil > now) {
     throw {
       status: 429,
@@ -20,9 +20,9 @@ export const signupInit = async ({ name, email, password, orgName }) => {
     };
   }
 
-  // 🚨 2️⃣ CHECK LIMIT
+
   if (session && session.otpAttempts >= 3) {
-    // ⛔ block for 1 day
+   
     await prisma.signupSession.update({
       where: { email },
       data: {
@@ -36,7 +36,7 @@ export const signupInit = async ({ name, email, password, orgName }) => {
     };
   }
 
-  // 🔐 NORMAL FLOW
+
   const hashedPassword = await bcrypt.hash(password, 10);
   const { otp, otpHash } = await generateOTPWithHash();
 

@@ -1,4 +1,3 @@
-// routes/dashboard.routes.js
 import express from "express";
 import  * as controller  from "./dashboard.controller.js";
 import attachOrg from "../../middleware/org.middleware.js";

@@ -6,7 +6,7 @@ export const generateOTPWithHash = async () => {
   const otpHash = await bcrypt.hash(otp, 10);
 
   return {
-    otp,       // send to user (email)
-    otpHash    // store in DB
+    otp,       
+    otpHash    
   };
 };

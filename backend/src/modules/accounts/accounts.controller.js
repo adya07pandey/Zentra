@@ -1,8 +1,6 @@
 import * as service from "./accounts.service.js";
 import {createAccountSchema, updateAccountSchema} from "./accounts.validation.js";
-//////////////////////////////////////////////////
-// CREATE
-//////////////////////////////////////////////////
+
 
 export const createAccount = async (req, res, next) => {
   try {
@@ -20,9 +18,6 @@ export const createAccount = async (req, res, next) => {
     next(err);
   }
 };
-//////////////////////////////////////////////////
-// GET ALL
-//////////////////////////////////////////////////
 
 export const getAccounts = async (req, res, next) => {
   try {
@@ -39,9 +34,6 @@ export const getAccounts = async (req, res, next) => {
   }
 };
 
-//////////////////////////////////////////////////
-// GET ONE
-//////////////////////////////////////////////////
 
 export const getAccount = async (req, res, next) => {
   try {
@@ -59,9 +51,6 @@ export const getAccount = async (req, res, next) => {
   }
 };
 
-//////////////////////////////////////////////////
-// UPDATE
-//////////////////////////////////////////////////
 
 export const updateAccount = async (req, res, next) => {
   try {

@@ -3,10 +3,10 @@ import prisma from "../config/db.js";
 export const allowRoles = (...roles) => {
   return async (req, res, next) => {
     try {
-      // ✅ userId comes from authenticated user (req.user)
+      //userId comes from authenticated user (req.user)
       const userId = req.user.userId;
 
-      // ✅ orgId comes from attachOrg middleware (req.orgId)
+      //orgId comes from attachOrg middleware (req.orgId)
       const orgId = req.orgId;
 
       // Check membership in this org

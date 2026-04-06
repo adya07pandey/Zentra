@@ -5,14 +5,14 @@ export const createOrganization = async (req, res) => {
 
     const org = await prisma.$transaction(async (tx) => {
 
-      // 1. Create org
+      //Create org
       const newOrg = await tx.organization.create({
         data: {
           name,
         },
       });
 
-      // 2. Make user OWNER
+      //Make user OWNER
       await tx.membership.create({
         data: {
           userId,

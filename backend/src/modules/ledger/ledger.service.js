@@ -1,12 +1,12 @@
 import prisma from "../../config/db.js";
 
 export const getLedger = async (accountId, orgId) => {
-    // ✅ fetch entries (org-safe)
+    
     const entries = await prisma.entry.findMany({
         where: {
             accountId,
             account: {
-                orgId, // 🔐 multi-tenant safety
+                orgId,
             },
         },
         include: {
