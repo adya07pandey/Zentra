@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String?
+  status        Boolean        @default(true)
+  isVerified    Boolean        @default(true)
+  provider      String?
+  providerId    String?        @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+  memberships   Membership[]
+  refreshTokens RefreshToken[]
+  transactions  Transaction[]
+
+  @@index([email])
+}
+
+model SignupSession {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  orgName   String
+  otpHash   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  otpAttempts Int @default(0)
+  otpBlockedUntil DateTime? 
+  @@index([email])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Organization {
+  id           String        @id @default(uuid())
+  name         String
+  status       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+  accounts     Account[]
+  auditLogs    AuditLog[]
+  invites      Invite[]
+  memberships  Membership[]
+  transactions Transaction[]
+}
+
+model Membership {
+  id        String       @id @default(uuid())
+  userId    String
+  orgId     String
+  role      Role
+  status    Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  org       Organization @relation(fields: [orgId], references: [id])
+  user      User         @relation(fields: [userId], references: [id])
+
+  @@unique([userId, orgId])
+  @@index([orgId])
+  @@index([userId])
+}
+
+model Invite {
+  id        String       @id @default(cuid())
+  email     String
+  orgId     String
+  role      Role
+  token     String       @unique
+  expiresAt DateTime
+  createdBy String
+  createdAt DateTime     @default(now())
+  org       Organization @relation(fields: [orgId], references: [id])
+
+  @@index([email])
+  @@index([orgId])
+}
+
+model Account {
+  id             String          @id @default(uuid())
+  name           String
+  type           AccountType
+  orgId          String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  org            Organization    @relation(fields: [orgId], references: [id])
+  accountBalance AccountBalance?
+  entries        Entry[]
+
+  @@unique([orgId, name])
+  @@index([orgId])
+}
+
+model Transaction {
+  id             String            @id @default(uuid())
+  description    String
+  orgId          String
+  createdById    String
+  status         TransactionStatus @default(POSTED)
+  isReversed     Boolean           @default(false)
+  reversedFromId String?
+  createdAt      DateTime          @default(now())
+  entries        Entry[]
+  createdBy      User              @relation(fields: [createdById], references: [id])
+  org            Organization      @relation(fields: [orgId], references: [id])
+  reversedFrom   Transaction?      @relation("Reversal", fields: [reversedFromId], references: [id])
+  reversals      Transaction[]     @relation("Reversal")
+
+  @@index([orgId])
+  @@index([createdById])
+}
+
+model Entry {
+  id            String      @id @default(uuid())
+  transactionId String
+  accountId     String
+  type          EntryType
+  amount        Decimal     @db.Decimal(18, 2)
+  createdAt     DateTime    @default(now())
+  account       Account     @relation(fields: [accountId], references: [id])
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+
+  @@index([transactionId])
+  @@index([accountId])
+}
+
+model AuditLog {
+  id             String        @id @default(cuid())
+  userId         String?
+  orgId          String?
+  action         String
+  entity         String
+  entityId       String?
+  metadata       Json?
+  createdAt      DateTime      @default(now())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  @@index([orgId])
+  @@index([userId])
+}
+
+model AccountBalance {
+  id        String   @id @default(cuid())
+  accountId String   @unique
+  balance   Decimal  @db.Decimal(18, 2)
+  updatedAt DateTime @updatedAt
+  account   Account  @relation(fields: [accountId], references: [id])
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  ANALYST
+  VIEWER
+}
+
+enum AccountType {
+  ASSET
+  LIABILITY
+  REVENUE
+  EXPENSE
+}
+
+enum TransactionStatus {
+  PENDING
+  POSTED
+  FAILED
+}
+
+enum EntryType {
+  DEBIT
+  CREDIT
+}
