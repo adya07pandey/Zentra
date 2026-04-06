@@ -4,7 +4,7 @@
 
 This project is a backend system for a multi-tenant financial SaaS platform. It enables organizations to manage financial records, users, and analytics within isolated environments.
 
-The system is designed with a focus on scalability, clean architecture, data integrity, and role-based access control.
+This system is designed as a production-style backend inspired by real-world fintech platforms such as Stripe and QuickBooks.
 
 ---
 
@@ -93,8 +93,8 @@ Each transaction follows the double-entry system where total debits equal total 
 
 Example:
 
-Bank (DEBIT) 50000
-Revenue (CREDIT) 50000
+- Bank (DEBIT)       50000
+- Revenue (CREDIT)   50000
 
 
 This ensures financial correctness and consistency.
@@ -106,13 +106,13 @@ This ensures financial correctness and consistency.
 Transactions are not deleted. Instead, reversal entries are created.
 
 Example: 
-Original:
-Cash (DEBIT) 1000
-Expense (CREDIT) 1000
+- Original:
+- Cash (DEBIT)       1000
+- Expense (CREDIT)   1000
 
 Reversal:
-Cash (CREDIT) 1000
-Expense (DEBIT) 1000
+- Cash (CREDIT)      1000
+- Expense (DEBIT)    1000
 
 This preserves audit history and ensures traceability.
 
@@ -121,57 +121,35 @@ This preserves audit history and ensures traceability.
 ## API Endpoints
 
 ### Authentication
-POST /api/auth/signup/init
-POST /api/auth/signup/verify
-POST /api/auth/login
-POST /api/auth/logout
-GET /api/auth/me
-
+- POST /api/auth/signup/init
+- POST /api/auth/signup/verify
+- POST /api/auth/login
+- POST /api/auth/logout
+- GET /api/auth/me
 
 ### Transactions
-POST /api/transactions
-GET /api/transactions
-GET /api/transactions/:id
-POST /api/transactions/:id/reverse
-
+- POST /api/transactions
+- GET /api/transactions
+- GET /api/transactions/:id
+- POST /api/transactions/:id/reverse
 
 ### Accounts
-POST /api/accounts
-GET /api/accounts
-GET /api/accounts/:id
-PUT /api/accounts/:id
-
+- POST /api/accounts
+- GET /api/accounts
+- GET /api/accounts/:id
+- PUT /api/accounts/:id
 
 ### Ledger
-GET /api/ledger/accounts/:accountId
-
+- GET /api/ledger/accounts/:accountId
 
 ### Users
-GET /api/users
-POST /api/users/invite
-POST /api/users/accept-invite
-
+- GET /api/users
+- POST /api/users/invite
+- POST /api/users/accept-invite
 
 ### Dashboard
-GET /api/dashboard
+- GET /api/dashboard
 
-
----
-
-## Architecture
-
-The system follows a modular backend architecture:
-
-- Routes: API definitions
-- Controllers: request handling
-- Services: business logic
-- Prisma models: database layer
-
-Middleware:
-
-- `protect`: authentication
-- `attachOrg`: tenant isolation
-- `allowRoles`: role-based access
 
 ---
 
@@ -186,47 +164,76 @@ Middleware:
 
 ---
 
+## Project Structure
+
+The backend follows a modular and scalable architecture, organized by feature-based modules.
+Each module encapsulates its own routes, controllers, and business logic.
+```
+backend/
+ └── src/
+     └── modules/
+         ├── accounts/
+         │   ├── accounts.controller.js
+         │   ├── accounts.routes.js
+         │   ├── accounts.service.js
+         │   ├── accounts.validation.js
+         │
+         ├── auth/
+         │   ├── auth.controller.js
+         │   ├── auth.routes.js
+         │   ├── auth.service.js
+         │   ├── auth.verification.js
+         │
+         ├── dashboard/
+         │   ├── dashboard.controller.js
+         │   ├── dashboard.routes.js
+         │   ├── dashboard.service.js
+         │
+         ├── ledger/
+         │   ├── ledger.controller.js
+         │   ├── ledger.routes.js
+         │   ├── ledger.service.js
+         │
+         ├── transactions/
+         │   ├── transaction.controller.js
+         │   ├── transaction.routes.js
+         │   ├── transaction.service.js
+         │
+         ├── users/
+         │   ├── user.controller.js
+         │   ├── user.routes.js
+         │   ├── user.service.js
+```
+
+## Request Flow and Middleware
+
+Each request follows a structured flow:
+
+Client → Route → Controller → Service → Database (Prisma)
+
+- Routes define endpoints
+- Controllers handle request/response
+- Services contain business logic
+- Prisma interacts with the database
+
+Middleware is used for:
+
+- `protect`: authentication using JWT
+- `attachOrg`: tenant isolation (multi-tenant support)
+- `allowRoles`: role-based access control
+
+This design ensures scalability, maintainability, and secure access control.
+
+---
+
 ## Setup Instructions
-
----
-
-## Architecture
-
-The system follows a modular backend architecture:
-
-- Routes: API definitions
-- Controllers: request handling
-- Services: business logic
-- Prisma models: database layer
-
-Middleware:
-
-- `protect`: authentication
-- `attachOrg`: tenant isolation
-- `allowRoles`: role-based access
-
----
-
-## Tech Stack
-
-- Node.js
-- Express
-- Prisma ORM
-- PostgreSQL (Neon)
-- JWT Authentication
-- Nodemailer
-
----
-
-## Setup Instructions
+```
 npm install
 cp .env.example .env
 npx prisma db push
 npx prisma db seed
 npm run dev
-
-
----
+```
 
 ## Assumptions
 
@@ -234,19 +241,6 @@ npm run dev
 - All financial transactions must be balanced
 - OTP verification is required for account creation
 - Audit logging is simplified
-
----
-
-## Evaluation Alignment
-
-This project demonstrates:
-
-- Multi-tenant SaaS architecture
-- Role-based access control
-- Financial data integrity
-- Aggregation logic for dashboards
-- Validation and error handling
-- Clean and maintainable backend design
 
 ---
 
