@@ -247,3 +247,7 @@ npm run dev
 ## Conclusion
 
 This project is a multi-tenant fintech SaaS backend that models real-world accounting systems using double-entry principles, secure user access, and scalable backend architecture.
+
+## Demo Login
+- Email: rahul@mail.com
+- Password: 12345678 
