@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,    
+  port: 465,    
   secure: false,   
   auth: {
     user: process.env.EMAIL_USER,
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 
 transporter.verify().then(() => {
-  console.log("✅ SMTP transporter is ready");
+  console.log("SMTP transporter is ready");
 }).catch(console.error);
 
 // Send OTP email
@@ -30,7 +30,7 @@ export const sendOTPEmail = async (email, otp) => {
 // Send Invite email
 export const sendInviteEmail = async (to, link) => {
   await transporter.sendMail({
-    from: `"Zorvyn" <${process.env.EMAIL_USER}>`,
+    from: `"Zentra" <${process.env.EMAIL_USER}>`,
     to,
     subject: "You're invited!",
     html: `
