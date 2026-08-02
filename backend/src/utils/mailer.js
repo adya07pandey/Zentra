@@ -1,21 +1,22 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
 
+dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,    
-  secure: false,   
+  port: 587,
+  secure: false, 
+  requireTLS: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
 
-
-
-transporter.verify().then(() => {
-  console.log("SMTP transporter is ready");
-}).catch(console.error);
+transporter.verify()
+  .then(() => console.log("SMTP transporter is ready"))
+  .catch((err) => console.error("SMTP VERIFY ERROR:", err));
 
 // Send OTP email
 export const sendOTPEmail = async (email, otp) => {
